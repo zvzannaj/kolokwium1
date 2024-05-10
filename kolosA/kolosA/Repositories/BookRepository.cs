@@ -11,14 +11,14 @@ public class BookRepository : IBooksRepository
     }
     public async Task<bool> DoesBookExist(int id)
     {
-        var query = "SELECT 1 FROM Books WHERE id = @PK";
+        var query = "SELECT 1 FROM Books WHERE PK = @ID";
 
         await using SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default"));
         await using SqlCommand command = new SqlCommand();
 
         command.Connection = connection;
         command.CommandText = query;
-        command.Parameters.AddWithValue("@PK", id);
+        command.Parameters.AddWithValue("@Id", id);
 
         await connection.OpenAsync();
 
@@ -29,14 +29,14 @@ public class BookRepository : IBooksRepository
 
     public async Task<bool> DoesGenreExist(int id)
     {
-        var query = "SELECT 1 FROM [Genres] WHERE id = @PK";
+        var query = "SELECT 1 FROM [Genres] WHERE PK = @ID";
 
         await using SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default"));
         await using SqlCommand command = new SqlCommand();
 
         command.Connection = connection;
         command.CommandText = query;
-        command.Parameters.AddWithValue("@PK", id);
+        command.Parameters.AddWithValue("@ID", id);
 
         await connection.OpenAsync();
 
@@ -48,26 +48,26 @@ public class BookRepository : IBooksRepository
     public async Task<BookDTO> GetBook(int id)
     {
         var query = @"SELECT 
-							Book.PK AS BookPK,
-							Book.Title AS BookTitle,
-							[Genres].Name AS GenresName,
-						FROM Books
-						JOIN Books_genres ON Books_genres.FK_book = Books.PK
-						JOIN [Genres] ON [Genres].PK = Books_genres.FK_genre
-						WHERE Books.PK = @PK";
+        				Books.PK AS BookPK,
+	        			Books.Title AS BookTitle,
+        				[Genres].Name AS GenresName
+	        			FROM Books
+	        	JOIN Books_genres ON Books_genres.FK_book = Books.PK
+        		JOIN [Genres] ON [Genres].PK = Books_genres.FK_genre
+        WHERE Books.PK = @ID";
 	    
 	    await using SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default"));
 	    await using SqlCommand command = new SqlCommand();
 
 	    command.Connection = connection;
 	    command.CommandText = query;
-	    command.Parameters.AddWithValue("@PK", id);
+	    command.Parameters.AddWithValue("@ID", id);
 	    
 	    await connection.OpenAsync();
 
 	    var reader = await command.ExecuteReaderAsync();
 
-	    var booksIdOrdinal = reader.GetOrdinal("BooksPK");
+	    var booksPkOrdinal = reader.GetOrdinal("BooksPK");
 	    var booksTitleOrdinal = reader.GetOrdinal("BooksTitle");
 	    var genresNameOrdinal = reader.GetOrdinal("GenresName");
 
@@ -86,7 +86,7 @@ public class BookRepository : IBooksRepository
 		    {
 			    bookDto = new BookDTO()
 			    {
-				    Pk = reader.GetInt32(booksIdOrdinal),
+				    Pk = reader.GetInt32(booksPkOrdinal),
 				    Title = reader.GetString(booksTitleOrdinal),
 				    Genres = new List<GenreDTO>()
 				    {
@@ -107,7 +107,7 @@ public class BookRepository : IBooksRepository
     public async Task AddNewBookWithGenres(NewBookWithGenresDTO newBookWithGenres)
     {
 	    var insert = @"INSERT INTO Books VALUES(@Title);
-					   SELECT @@IDENTITY AS ID;";
+					   SELECT @@IDENTITY AS PK;";
 	    
 	    await using SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default"));
 	    await using SqlCommand command = new SqlCommand();

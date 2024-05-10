@@ -7,14 +7,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     </ItemGroup>
 
     <ItemGroup>
       <Compile Remove="Models\DTOs\GenreDTO.cs" />
       <Compile Remove="Models\DTOs\BookGenreDTO.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="http-client.env.json" />
     </ItemGroup>
 
 </Project>

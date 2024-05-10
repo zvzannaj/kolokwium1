@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace kolosA
 {
 
-    [Route("api/books")]
+    [Route("api/[controller]")]
     [ApiController]
     
     public class BooksController : Controller
@@ -27,9 +27,9 @@ namespace kolosA
             return Ok(animal);
         }
         
-        // Version with implicit transaction
+        
         [HttpPost]
-        public async Task<IActionResult> AddAnimal(NewBookWithGenresDTO newBookWithGenres)
+        public async Task<IActionResult> AddGenre(NewBookWithGenresDTO newBookWithGenres)
         {
 
             foreach (var genre in newBookWithGenres.Genres)

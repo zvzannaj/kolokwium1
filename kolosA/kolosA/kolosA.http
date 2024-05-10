@@ -1,4 +1,4 @@
-@kolosA_HostAddress = http://localhost:5148
+@kolosA_HostAddress = https://localhost:5148
 
 GET {{kolosA_HostAddress}}/weatherforecast/
 Accept: application/json
